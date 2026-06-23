@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>XMMO指标监控v6</title>
+<title>XNTK指标监控v6</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23121722'/%3E%3Ctext x='4' y='44' font-size='30' fill='%2360a5fa' font-weight='700'%3ESPM%3C/text%3E%3C/svg%3E" />
 <meta name="theme-color" content="#0b0e13" />
 <script src="./lib/chart.umd.min.js"></script>
@@ -112,7 +112,7 @@
 <div class="wrap">
 
   <div class="page-head">
-    <h1>XMMO指标监控v6</h1>
+    <h1>XNTK指标监控v6</h1>
     <span class="status" id="status"><span class="dot"></span><span id="status-text">加载数据中…</span></span>
   </div>
 
@@ -120,7 +120,7 @@
   <div class="stats">
     <div class="stat">
       <div class="label">SPMO 价格
-        <span class="help" tabindex="0"><span class="tip">XMMO（ 500 Momentum ETF）收盘价，数据来自用户提供的 CSV 文件。</span></span>
+        <span class="help" tabindex="0"><span class="tip">XNTK（ 500 Momentum ETF）收盘价，数据来自用户提供的 CSV 文件。</span></span>
       </div>
       <div class="value" id="price">—</div>
       <div class="hint" id="price-hint">—</div>
@@ -207,7 +207,7 @@
   <!-- Chart -->
   <div class="card">
     <div class="card-head">
-      <h2>XMMO指标历史走势</h2>
+      <h2>XNTK指标历史走势</h2>
       <span class="legend">
         <span class="swatch" style="background:var(--accent)"></span>bias
         <span class="swatch" style="background:var(--purple)"></span>综合评分
@@ -240,7 +240,7 @@
           <tr>
             <th>时间</th>
             <th class="num">综合评分</th>
-            <th class="num">XMMO 价格</th>
+            <th class="num">XNTK 价格</th>
             <th class="num">回撤%</th>
             <th class="num">乖离指标</th>
             <th class="num">RSI</th>
@@ -254,7 +254,7 @@
   </div>
 
   <div style="font-size:11px;color:var(--muted);text-align:center;margin-top:12px;">
-    数据来源：用户提供的 XMMO CSV 文件（2015-10-16 ~ 2026-06-23）
+    数据来源：用户提供的 XNTK CSV 文件（2015-10-16 ~ 2026-06-23）
     | 子评分(s_bias/s_ma/s_dd/s_vol)：5年滚动窗口百分位 | RSI：绝对阈值30/70 | 综合：5年滚动50/85%分位 | 绝对线：≥75抄底 ≤25观望
   </div>
 
@@ -302,7 +302,7 @@
     setStatus("加载数据…");
     // Try fetch first (http://)
     if (typeof fetch === "function") {
-      fetch("data/xmmo_daily.json")
+      fetch("data/xntk_daily.json")
         .then(function(r){
           if (!r.ok) throw new Error("HTTP " + r.status);
           return r.json();
@@ -317,7 +317,7 @@
   var tryXHR = function(callback){
     var xhr = new XMLHttpRequest();
     xhr.overrideMimeType("application/json");
-    xhr.open("GET", "data/xmmo_daily.json", true);
+    xhr.open("GET", "data/xntk_daily.json", true);
     xhr.onload = function(){
       if (xhr.status === 0 || xhr.status === 200) {
         try {
@@ -330,7 +330,7 @@
       }
     };
     xhr.onerror = function(){
-      callback(new Error("无法加载数据文件。请确保 data/xmmo_daily.json 存在，或通过 HTTP 服务器访问此页面。"));
+      callback(new Error("无法加载数据文件。请确保 data/xntk_daily.json 存在，或通过 HTTP 服务器访问此页面。"));
     };
     xhr.send(null);
   };
