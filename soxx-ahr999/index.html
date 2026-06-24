@@ -3,11 +3,9 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>SOXX指标监控v6（构建于2026-06-24 19:04）</title>
+<title>SOXX指标监控v6（构建于2026-06-24 19:09）</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23121722'/%3E%3Ctext x='4' y='44' font-size='30' fill='%2360a5fa' font-weight='700'%3ESOX%3C/text%3E%3C/svg%3E" />
 <meta name="theme-color" content="#0b0e13" />
-<script src="./lib/chart.umd.min.js"></script>
-<script src="./lib/chartjs-adapter-date-fns.bundle.min.js"></script>
 <style>
   :root {
     --bg:       #0b0e13; --bg-2: #121a24; --panel: #141a24;
@@ -69,8 +67,6 @@
   .dist-cell { flex:1; text-align:center; }
   .dist-cell-label { font-size:11px; color:var(--muted); }
 
-  .chart-wrap { background:var(--panel); border:1px solid var(--border); border-radius:8px; padding:14px; margin-bottom:18px; }
-  .chart-wrap canvas { width:100% !important; height:340px !important; }
 
   table { width:100%; border-collapse:collapse; font-size:12.8px; }
   thead { position:sticky; top:0; z-index:2; }
@@ -96,8 +92,6 @@
   .history-toolbar label { font-size:12px; color:var(--muted); }
   .tbl-scroll { max-height:480px; overflow:auto; border:1px solid var(--border); border-radius:8px; }
 
-  .legend { font-size:11.5px; color:var(--muted); }
-  .swatch { display:inline-block; width:10px; height:10px; border-radius:2px; vertical-align:middle; margin-right:3px; }
 
   .card { background:var(--panel); border:1px solid var(--border); border-radius:8px; padding:14px; margin-bottom:14px; }
   .card-head { display:flex; justify-content:space-between; align-items:baseline; margin-bottom:10px; }
@@ -118,7 +112,7 @@
   <div class="page-head">
     <a class="back-btn" href="../index.html">← 返回总览</a>
     <h1>SOXX指标监控v6</h1>
-    <span class="status ok" id="status"><span class="dot"></span><span id="status-text">数据已加载 · 构建于 2026-06-24 19:04</span></span>
+    <span class="status ok" id="status"><span class="dot"></span><span id="status-text">数据已加载 · 构建于 2026-06-24 19:09</span></span>
   </div>
 
   <!-- Row 1 -->
@@ -202,20 +196,6 @@
       <div class="dist-cell zone-定投"><div class="dist-cell-label" id="dist-b-label">—</div><div id="dist-b"></div></div>
       <div class="dist-cell zone-抄底"><div class="dist-cell-label" id="dist-a-label">—</div><div id="dist-a"></div></div>
     </div>
-  </div>
-
-  <!-- Chart -->
-  <div class="card">
-    <div class="card-head">
-      <h2>SOXX指标历史走势（近500交易日）</h2>
-      <span class="legend">
-        <span class="swatch" style="background:var(--accent)"></span>bias
-        <span class="swatch" style="background:var(--purple)"></span>综合评分
-        <span class="swatch" style="background:var(--cyan)"></span>10年均值
-        <span class="swatch" style="background:var(--price)"></span>SOXX价格
-      </span>
-    </div>
-    <div class="chart-wrap"><canvas id="chart"></canvas></div>
   </div>
 
   <!-- History table -->
@@ -341,40 +321,6 @@ var EMBEDDED_DATA = {"bars":[{"t":1719273600000,"c":246.38,"sma200":197.42,"std2
   var oldestDate = fmtDate(fullSeries[fullSeries.length-1].t);
   el("footer-info").textContent = "数据范围：" + oldestDate + " ~ " + latestDate + "（近" + fullSeries.length + "个交易日）| 子评分：5年滚动窗口百分位 | RSI：绝对阈值30/70";
 
-  // ── Chart ──────────────────────────────────────────────────────
-  var labels=[], biasData=[], compData=[], hmData=[], priceData=[];
-  for (var i = fullSeries.length-1; i >= 0; i--) {
-    var row = fullSeries[i];
-    labels.push(fmtDate(row.t));
-    biasData.push(row.bias != null ? row.bias : null);
-    compData.push(row.composite != null ? row.composite : null);
-    hmData.push(row.hm_10yr || null);
-    priceData.push(row.c || null);
-  }
-  var ctx = el("chart").getContext("2d");
-  new Chart(ctx, {
-    type: "line",
-    data: {
-      labels: labels,
-      datasets: [
-        { label:"乖离指标(bias)", data:biasData, borderColor:"rgba(96,165,250,0.9)", fill:false, tension:0.3, pointRadius:0, yAxisID:"y" },
-        { label:"综合评分",       data:compData, borderColor:"rgba(167,139,250,0.9)", fill:false, tension:0.3, pointRadius:0, yAxisID:"y1" },
-        { label:"10年均值",       data:hmData,   borderColor:"rgba(34,211,238,0.7)",  borderDash:[6,3], fill:false, tension:0.3, pointRadius:0, yAxisID:"y" },
-        { label:"SOXX价格",   data:priceData,borderColor:"rgba(245,158,11,0.8)",  fill:false, tension:0.3, pointRadius:0, yAxisID:"y" }
-      ]
-    },
-    options: {
-      responsive:true, maintainAspectRatio:false,
-      interaction:{ mode:"index", intersect:false },
-      plugins:{ legend:{ labels:{ color:"#b8c1cc", font:{ size:11 } } } },
-      scales:{
-        x:  { ticks:{ color:"#6e7681", maxRotation:0, autoSkipPadding:20 }, grid:{ color:"rgba(31,41,55,0.5)" } },
-        y:  { position:"left",  ticks:{ color:"#6e7681" }, grid:{ color:"rgba(31,41,55,0.5)" }, title:{ display:true, text:"价格/bias", color:"#6e7681" } },
-        y1: { position:"right", min:0, max:100, ticks:{ color:"#a78bfa" }, grid:{ drawOnChartArea:false }, title:{ display:true, text:"综合评分", color:"#a78bfa" } }
-      }
-    }
-  });
-
   // ── Distribution ───────────────────────────────────────────────
   var counts = {"抄底":0,"定投":0,"观望":0};
   for (var i = 0; i < fullSeries.length; i++) {
@@ -426,7 +372,7 @@ var EMBEDDED_DATA = {"bars":[{"t":1719273600000,"c":246.38,"sma200":197.42,"std2
   el("date-search").addEventListener("input",  renderTable);
   renderTable();
 
-  el("status-text").textContent = "数据已加载 · 数据截至 " + latestDate + " · 构建于 2026-06-24 19:04";
+  el("status-text").textContent = "数据已加载 · 数据截至 " + latestDate + " · 构建于 2026-06-24 19:09";
 
 })();
 </script>
