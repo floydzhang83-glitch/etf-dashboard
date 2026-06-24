@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>ETF监控仪表盘（构建于2026-06-24 19:21）</title>
+<title>ETF监控仪表盘（构建于2026-06-24 21:22）</title>
 <style>
   :root {
     --bg: #0b0e13; --bg-2: #121a24; --panel: #141a24;
@@ -86,7 +86,7 @@
     <div class="meta" id="meta-XNTK"></div>
   </a>
 </div>
-<div class="updated" id="updated">构建于 2026-06-24 19:21</div>
+<div class="updated" id="updated">构建于 2026-06-24 21:22</div>
 
 <script>
 var SUMMARY = {"SPMO":{"price":154.15,"prev":161.66,"composite":35.05,"rsi":50.71,"dd":-0.046456,"vol":0.3981,"date":1782172800000},"SOXX":{"price":607.64,"prev":655.01,"composite":42.8,"rsi":51.98,"dd":-0.07232,"vol":0.7704,"date":1782172800000},"XMMO":{"price":169.28,"prev":173.82,"composite":33.96,"rsi":49.7,"dd":-0.026119,"vol":0.2948,"date":1782172800000},"XNTK":{"price":368.65,"prev":389.18,"composite":36.34,"rsi":44.97,"dd":-0.052752,"vol":0.5055,"date":1782172800000}};
@@ -128,7 +128,7 @@ var SUMMARY = {"SPMO":{"price":154.15,"prev":161.66,"composite":35.05,"rsi":50.7
     if(s.vol!=null) metaParts.push("波动 "+(s.vol*100).toFixed(1)+"%");
     metaEl.textContent = metaParts.join(" | ");
 
-    document.getElementById("updated").textContent = "数据截至 " + fmtDate(s.date) + " · 构建于 2026-06-24 19:21";
+    document.getElementById("updated").textContent = "数据截至 " + fmtDate(s.date) + " · 构建于 2026-06-24 21:22";
   }
 })();
 </script>
