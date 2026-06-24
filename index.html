@@ -3,132 +3,101 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>ETF监控仪表盘（构建于2026-06-24 21:26）</title>
+<title>美股ETF 监控仪表盘</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23121722'/%3E%3Ctext x='4' y='44' font-size='30' fill='%2360a5fa' font-weight='700'%3EETF%3C/text%3E%3C/svg%3E" />
+<meta name="theme-color" content="#0b0e13" />
 <style>
   :root {
-    --bg: #0b0e13; --bg-2: #121a24; --panel: #141a24;
-    --border: #1f2937; --ink: #e6edf3; --ink-2: #b8c1cc;
-    --muted: #6e7681; --green: #22c55e; --yellow: #eab308;
-    --red: #ef4444; --accent: #60a5fa; --price: #f59e0b;
+    --bg:#0b0e13;--bg-2:#121a24;--panel:#141a24;
+    --border:#1f2937;--ink:#e6edf3;--ink-2:#b8c1cc;
+    --muted:#6e7681;--green:#22c55e;--yellow:#eab308;
+    --red:#ef4444;--accent:#60a5fa;--price:#f59e0b;
+    --purple:#a78bfa;--cyan:#22d3ee;
   }
-  * { box-sizing: border-box; margin:0; padding:0; }
-  html, body {
-    background:var(--bg); color:var(--ink);
-    font: 14px/1.55 -apple-system, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", system-ui, sans-serif;
-    min-height:100vh; padding:20px;
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:var(--bg);color:var(--ink);
+    font:14px/1.55 -apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",system-ui,sans-serif}
+  a{color:var(--accent);text-decoration:none}
+  .ov-title{text-align:center;font-size:1.5rem;color:var(--accent);margin-bottom:24px;font-weight:600}
+  .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;max-width:800px;margin:0 auto}
+  .ov-card{
+    background:var(--panel);border:1px solid var(--border);border-radius:12px;
+    padding:18px;cursor:pointer;display:block;transition:border-color .2s;
   }
-  h1 { text-align:center; font-size:1.5rem; color:var(--accent); margin-bottom:24px; font-weight:600; }
-  .grid { display:grid; grid-template-columns:repeat(2,1fr); gap:14px; max-width:800px; margin:0 auto; }
-  .card {
-    background:var(--panel); border:1px solid var(--border); border-radius:12px;
-    padding:18px; text-decoration:none; color:inherit; display:block;
-    transition:border-color .2s;
-  }
-  .card:hover { border-color:var(--accent); }
-  .card-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; }
-  .etf-name { font-size:1.2rem; font-weight:700; }
-  .badge { font-size:0.75rem; padding:3px 10px; border-radius:20px; font-weight:600; }
-  .badge-观望 { background:rgba(100,116,139,0.2); color:#94a3b8; }
-  .badge-定投 { background:rgba(234,179,8,0.15); color:var(--yellow); }
-  .badge-抄底 { background:rgba(34,197,94,0.15); color:var(--green); }
-  .price { font-size:1.6rem; font-weight:700; color:var(--price); margin-bottom:4px; }
-  .price .chg { font-size:0.8rem; margin-left:6px; }
-  .composite { font-size:0.9rem; color:var(--muted); }
-  .composite span { font-weight:600; }
-  .composite .low { color:#94a3b8; }
-  .composite .mid { color:var(--yellow); }
-  .composite .high { color:var(--green); }
-  .meta { font-size:0.75rem; color:var(--muted); margin-top:4px; }
-  .updated { text-align:center; font-size:0.75rem; color:var(--muted); margin-top:24px; }
-  @media (max-width:800px) {
-    .grid { grid-template-columns:1fr; max-width:500px; }
-  }
+  .ov-card:hover{border-color:var(--accent)}
+  .card-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+  .etf-name{font-size:1.2rem;font-weight:700}
+  .badge{font-size:0.75rem;padding:3px 10px;border-radius:20px;font-weight:600}
+  .badge-观望{background:rgba(100,116,139,0.2);color:#94a3b8}
+  .badge-定投{background:rgba(234,179,8,0.15);color:var(--yellow)}
+  .badge-抄底{background:rgba(34,197,94,0.15);color:var(--green)}
+  .price{font-size:1.6rem;font-weight:700;color:var(--price);margin-bottom:4px}
+  .price .chg{font-size:0.8rem;margin-left:6px}
+  .composite{font-size:0.9rem;color:var(--muted)}
+  .composite span{font-weight:600}
+  .composite .low{color:#94a3b8}
+  .composite .mid{color:var(--yellow)}
+  .composite .high{color:var(--green)}
+  .meta{font-size:0.75rem;color:var(--muted);margin-top:4px}
+  .updated{text-align:center;font-size:0.75rem;color:var(--muted);margin-top:24px}
+  @media(max-width:800px){.grid{grid-template-columns:1fr;max-width:500px}}
 </style>
 </head>
-<body>
-<h1>📊 ETF 监控仪表盘</h1>
+<body style="padding:20px">
+<div class="ov-title">美股ETF 监控仪表盘</div>
 <div class="grid">
-
-  <a class="card" href="spy-ahr999/index.html">
-    <div class="card-header">
-      <span class="etf-name">SPMO</span>
-      <span class="badge badge-watch" id="badge-SPMO">观望</span>
-    </div>
-    <div class="price" id="price-SPMO">—</div>
-    <div class="composite">综合评分: <span class="low" id="comp-SPMO">—</span></div>
-    <div class="meta" id="meta-SPMO"></div>
+  <a class="ov-card" href="spy-ahr999/index.html">
+    <div class="card-header"><span class="etf-name">SPMO</span><span class="badge badge-观望" id="badge-SPMO">观望</span></div>
+    <div class="price" id="ov-price-SPMO">—</div>
+    <div class="composite">综合评分: <span class="low" id="ov-comp-SPMO">—</span></div>
+    <div class="meta" id="ov-meta-SPMO"></div>
   </a>
-  <a class="card" href="soxx-ahr999/index.html">
-    <div class="card-header">
-      <span class="etf-name">SOXX</span>
-      <span class="badge badge-watch" id="badge-SOXX">观望</span>
-    </div>
-    <div class="price" id="price-SOXX">—</div>
-    <div class="composite">综合评分: <span class="low" id="comp-SOXX">—</span></div>
-    <div class="meta" id="meta-SOXX"></div>
+  <a class="ov-card" href="soxx-ahr999/index.html">
+    <div class="card-header"><span class="etf-name">SOXX</span><span class="badge badge-观望" id="badge-SOXX">观望</span></div>
+    <div class="price" id="ov-price-SOXX">—</div>
+    <div class="composite">综合评分: <span class="low" id="ov-comp-SOXX">—</span></div>
+    <div class="meta" id="ov-meta-SOXX"></div>
   </a>
-  <a class="card" href="xmmo-ahr999/index.html">
-    <div class="card-header">
-      <span class="etf-name">XMMO</span>
-      <span class="badge badge-watch" id="badge-XMMO">观望</span>
-    </div>
-    <div class="price" id="price-XMMO">—</div>
-    <div class="composite">综合评分: <span class="low" id="comp-XMMO">—</span></div>
-    <div class="meta" id="meta-XMMO"></div>
+  <a class="ov-card" href="xmmo-ahr999/index.html">
+    <div class="card-header"><span class="etf-name">XMMO</span><span class="badge badge-观望" id="badge-XMMO">观望</span></div>
+    <div class="price" id="ov-price-XMMO">—</div>
+    <div class="composite">综合评分: <span class="low" id="ov-comp-XMMO">—</span></div>
+    <div class="meta" id="ov-meta-XMMO"></div>
   </a>
-  <a class="card" href="xntk-ahr999/index.html">
-    <div class="card-header">
-      <span class="etf-name">XNTK</span>
-      <span class="badge badge-watch" id="badge-XNTK">观望</span>
-    </div>
-    <div class="price" id="price-XNTK">—</div>
-    <div class="composite">综合评分: <span class="low" id="comp-XNTK">—</span></div>
-    <div class="meta" id="meta-XNTK"></div>
+  <a class="ov-card" href="xntk-ahr999/index.html">
+    <div class="card-header"><span class="etf-name">XNTK</span><span class="badge badge-观望" id="badge-XNTK">观望</span></div>
+    <div class="price" id="ov-price-XNTK">—</div>
+    <div class="composite">综合评分: <span class="low" id="ov-comp-XNTK">—</span></div>
+    <div class="meta" id="ov-meta-XNTK"></div>
   </a>
 </div>
-<div class="updated" id="updated">构建于 2026-06-24 21:26</div>
+<div class="updated" id="ov-updated">—</div>
 
 <script>
-var SUMMARY = {"SPMO":{"price":154.15,"prev":161.66,"composite":35.05,"rsi":50.71,"dd":-0.046456,"vol":0.3981,"date":1782172800000},"SOXX":{"price":607.64,"prev":655.01,"composite":42.8,"rsi":51.98,"dd":-0.07232,"vol":0.7704,"date":1782172800000},"XMMO":{"price":169.28,"prev":173.82,"composite":33.96,"rsi":49.7,"dd":-0.026119,"vol":0.2948,"date":1782172800000},"XNTK":{"price":368.65,"prev":389.18,"composite":36.34,"rsi":44.97,"dd":-0.052752,"vol":0.5055,"date":1782172800000}};
+var SUMMARY = {"SPMO": {"price": 154.15, "prev": 161.66, "composite": 35.05, "rsi": 50.71, "dd": -0.046456, "vol": 0.3981, "date": 1782172800000}, "SOXX": {"price": 607.64, "prev": 655.01, "composite": 42.8, "rsi": 51.98, "dd": -0.07232, "vol": 0.7704, "date": 1782172800000}, "XMMO": {"price": 169.28, "prev": 173.82, "composite": 33.96, "rsi": 49.7, "dd": -0.026119, "vol": 0.2948, "date": 1782172800000}, "XNTK": {"price": 368.65, "prev": 389.18, "composite": 36.34, "rsi": 44.97, "dd": -0.052752, "vol": 0.5055, "date": 1782172800000}};
+var fmt$=function(v){return v==null?"—":"$"+v.toFixed(2)};
+var fmtDate=function(ts){
+  var d=new Date(ts),p2=function(n){return n<10?"0"+n:""+n};
+  return d.getUTCFullYear()+"-"+p2(d.getUTCMonth()+1)+"-"+p2(d.getUTCDate());
+};
 (function(){
-  "use strict";
-
-  var COMP_STOP = 40.0, COMP_BOTTOM = 60.0;
-  var zone = function(c){
-    if(c==null) return "—";
-    if(c>=75||c>=COMP_BOTTOM) return "抄底";
-    if(c>COMP_STOP) return "定投";
-    return "观望";
-  };
-  var fmt$ = function(v){ return v==null?"—":"$"+v.toFixed(2); };
-  var fmtDate = function(ts){ var d=new Date(ts); return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); };
-
   for(var k in SUMMARY){
-    var s = SUMMARY[k];
-    var c = s.composite||0;
-    var z = zone(c);
-    var priceEl = document.getElementById("price-"+k);
-    var compEl  = document.getElementById("comp-"+k);
-    var badgeEl = document.getElementById("badge-"+k);
-    var metaEl  = document.getElementById("meta-"+k);
-
-    var chg = s.prev ? ((s.price-s.prev)/s.prev*100) : 0;
-    var chgStr = chg>=0 ? "+"+chg.toFixed(2)+"%" : chg.toFixed(2)+"%";
-    var chgColor = chg>=0 ? "var(--green)" : "var(--red)";
-
-    priceEl.innerHTML = fmt$(s.price) + " <span class='chg' style='color:"+chgColor+"'>"+chgStr+"</span>";
-    compEl.textContent = c.toFixed(1);
-    compEl.className = z=="抄底"?"high":z=="定投"?"mid":"low";
-    badgeEl.textContent = z;
-    badgeEl.className = "badge badge-"+z;
-
-    var metaParts = [];
-    if(s.rsi!=null) metaParts.push("RSI "+s.rsi.toFixed(1));
-    if(s.dd!=null) metaParts.push("回撤 "+(s.dd*100).toFixed(1)+"%");
-    if(s.vol!=null) metaParts.push("波动 "+(s.vol*100).toFixed(1)+"%");
-    metaEl.textContent = metaParts.join(" | ");
-
-    document.getElementById("updated").textContent = "数据截至 " + fmtDate(s.date) + " · 构建于 2026-06-24 21:26";
+    var s=SUMMARY[k],c=s.composite||0;
+    var z=c>=60?"抄底":c>=40?"定投":"观望";
+    var chg=s.prev?((s.price-s.prev)/s.prev*100):0;
+    var chgStr=chg>=0?"+"+chg.toFixed(2)+"%":chg.toFixed(2)+"%";
+    var chgColor=chg>=0?"var(--green)":"var(--red)";
+    document.getElementById("ov-price-"+k).innerHTML=fmt$(s.price)+" <span class='chg' style='color:"+chgColor+"'>"+chgStr+"</span>";
+    document.getElementById("ov-comp-"+k).textContent=c.toFixed(1);
+    document.getElementById("ov-comp-"+k).className=z=="抄底"?"high":z=="定投"?"mid":"low";
+    document.getElementById("badge-"+k).textContent=z;
+    document.getElementById("badge-"+k).className="badge badge-"+z;
+    var mp=[];
+    if(s.rsi!=null)mp.push("RSI "+s.rsi.toFixed(1));
+    if(s.dd!=null)mp.push("回撤 "+(s.dd*100).toFixed(1)+"%");
+    if(s.vol!=null)mp.push("波动 "+(s.vol*100).toFixed(1)+"%");
+    document.getElementById("ov-meta-"+k).textContent=mp.join(" | ");
+    document.getElementById("ov-updated").textContent="数据截至 "+fmtDate(s.date);
   }
 })();
 </script>
