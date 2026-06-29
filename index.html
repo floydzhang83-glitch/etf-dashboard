@@ -1,105 +1,117 @@
-<!doctype html>
-<html lang="zh-CN">
+<!DOCTYPE html>
+<html lang="zh">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>美股ETF 监控仪表盘</title>
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23121722'/%3E%3Ctext x='4' y='44' font-size='30' fill='%2360a5fa' font-weight='700'%3EETF%3C/text%3E%3C/svg%3E" />
-<meta name="theme-color" content="#0b0e13" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ETF Dashboard - 总览</title>
 <style>
-  :root {
-    --bg:#0b0e13;--bg-2:#121a24;--panel:#141a24;
-    --border:#1f2937;--ink:#e6edf3;--ink-2:#b8c1cc;
-    --muted:#6e7681;--green:#22c55e;--yellow:#eab308;
-    --red:#ef4444;--accent:#60a5fa;--price:#f59e0b;
-    --purple:#a78bfa;--cyan:#22d3ee;
-  }
-  *{box-sizing:border-box;margin:0;padding:0}
-  html,body{background:var(--bg);color:var(--ink);
-    font:14px/1.55 -apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",system-ui,sans-serif}
-  a{color:var(--accent);text-decoration:none}
-  .ov-title{text-align:center;font-size:1.5rem;color:var(--accent);margin-bottom:24px;font-weight:600}
-  .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;max-width:800px;margin:0 auto}
-  .ov-card{
-    background:var(--panel);border:1px solid var(--border);border-radius:12px;
-    padding:18px;cursor:pointer;display:block;transition:border-color .2s;
-  }
-  .ov-card:hover{border-color:var(--accent)}
-  .card-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
-  .etf-name{font-size:1.2rem;font-weight:700}
-  .badge{font-size:0.75rem;padding:3px 10px;border-radius:20px;font-weight:600}
-  .badge-观望{background:rgba(100,116,139,0.2);color:#94a3b8}
-  .badge-定投{background:rgba(234,179,8,0.15);color:var(--yellow)}
-  .badge-抄底{background:rgba(34,197,94,0.15);color:var(--green)}
-  .price{font-size:1.6rem;font-weight:700;color:var(--price);margin-bottom:4px}
-  .price .chg{font-size:0.8rem;margin-left:6px}
-  .composite{font-size:0.9rem;color:var(--muted)}
-  .composite span{font-weight:600}
-  .composite .low{color:#94a3b8}
-  .composite .mid{color:var(--yellow)}
-  .composite .high{color:var(--green)}
-  .meta{font-size:0.75rem;color:var(--muted);margin-top:4px}
-  .updated{text-align:center;font-size:0.75rem;color:var(--muted);margin-top:24px}
-  @media(max-width:800px){.grid{grid-template-columns:1fr;max-width:500px}}
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, 'Segoe UI', sans-serif; background: #0a0e17; color: #e1e5ee; min-height: 100vh; padding: 16px; }
+  h1 { text-align: center; font-size: 1.4rem; color: #6ec1e4; margin-bottom: 20px; }
+  .grid { display: grid; grid-template-columns: 1fr; gap: 14px; max-width: 500px; margin: 0 auto; }
+  .card { background: #131722; border: 1px solid #2a2f3a; border-radius: 12px; padding: 18px; text-decoration: none; color: inherit; display: block; transition: border-color 0.2s; }
+  .card:hover { border-color: #6ec1e4; }
+  .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+  .etf-name { font-size: 1.2rem; font-weight: 700; }
+  .badge { font-size: 0.75rem; padding: 3px 10px; border-radius: 20px; font-weight: 600; }
+  .badge-watch { background: #2a2f3a; color: #888; }
+  .badge-buy { background: #1a3a1a; color: #4caf50; }
+  .badge-bottom { background: #3a1a1a; color: #ef5350; }
+  .price { font-size: 1.6rem; font-weight: 700; color: #fff; margin-bottom: 6px; }
+  .composite { font-size: 0.9rem; color: #888; }
+  .composite span { font-weight: 600; }
+  .composite .low { color: #888; }
+  .composite .mid { color: #f0b90b; }
+  .composite .high { color: #ef5350; }
+  .updated { text-align: center; font-size: 0.75rem; color: #555; margin-top: 24px; }
 </style>
 </head>
-<body style="padding:20px">
-<div class="ov-title">美股ETF 监控仪表盘</div>
+<body>
+<h1>📊 ETF 监控仪表盘</h1>
 <div class="grid">
-  <a class="ov-card" href="spy-ahr999/index.html">
-    <div class="card-header"><span class="etf-name">SPMO</span><span class="badge badge-观望" id="badge-SPMO">观望</span></div>
-    <div class="price" id="ov-price-SPMO">—</div>
-    <div class="composite">综合评分: <span class="low" id="ov-comp-SPMO">—</span></div>
-    <div class="meta" id="ov-meta-SPMO"></div>
+  <a class="card" href="spy-ahr999/index.html">
+    <div class="card-header">
+      <span class="etf-name">SPMO</span>
+      <span class="badge badge-watch">观望</span>
+    </div>
+    <div class="price">加载中...</div>
+    <div class="composite">Composite: <span class="low">--</span></div>
   </a>
-  <a class="ov-card" href="soxx-ahr999/index.html">
-    <div class="card-header"><span class="etf-name">SOXX</span><span class="badge badge-观望" id="badge-SOXX">观望</span></div>
-    <div class="price" id="ov-price-SOXX">—</div>
-    <div class="composite">综合评分: <span class="low" id="ov-comp-SOXX">—</span></div>
-    <div class="meta" id="ov-meta-SOXX"></div>
+  <a class="card" href="soxx-ahr999/index.html">
+    <div class="card-header">
+      <span class="etf-name">SOXX</span>
+      <span class="badge badge-watch">观望</span>
+    </div>
+    <div class="price">加载中...</div>
+    <div class="composite">Composite: <span class="low">--</span></div>
   </a>
-  <a class="ov-card" href="xmmo-ahr999/index.html">
-    <div class="card-header"><span class="etf-name">XMMO</span><span class="badge badge-观望" id="badge-XMMO">观望</span></div>
-    <div class="price" id="ov-price-XMMO">—</div>
-    <div class="composite">综合评分: <span class="low" id="ov-comp-XMMO">—</span></div>
-    <div class="meta" id="ov-meta-XMMO"></div>
-  </a>
-  <a class="ov-card" href="xntk-ahr999/index.html">
-    <div class="card-header"><span class="etf-name">XNTK</span><span class="badge badge-观望" id="badge-XNTK">观望</span></div>
-    <div class="price" id="ov-price-XNTK">—</div>
-    <div class="composite">综合评分: <span class="low" id="ov-comp-XNTK">—</span></div>
-    <div class="meta" id="ov-meta-XNTK"></div>
+  <a class="card" href="xmmo-ahr999/index.html">
+    <div class="card-header">
+      <span class="etf-name">XMMO</span>
+      <span class="badge badge-watch">观望</span>
+    </div>
+    <div class="price">加载中...</div>
+    <div class="composite">Composite: <span class="low">--</span></div>
   </a>
 </div>
-<div class="updated" id="ov-updated">—</div>
+<div class="updated">数据更新时间: <span id="date"></span></div>
 
 <script>
-var SUMMARY = {"SPMO": {"price": 154.2, "prev": 159.64, "composite": 30.29, "rsi": 61.04, "dd": -0.046146, "vol": 0.4219, "date": 1782432000000}, "SOXX": {"price": 589.94, "prev": 625.2, "composite": 40.66, "rsi": 58.78, "dd": -0.099342, "vol": 0.7922, "date": 1782432000000}, "XMMO": {"price": 167.07, "prev": 171.12, "composite": 35.06, "rsi": 54.44, "dd": -0.038833, "vol": 0.292, "date": 1782432000000}, "XNTK": {"price": 367.86, "prev": 376.42, "composite": 31.31, "rsi": 56.26, "dd": -0.055752, "vol": 0.5064, "date": 1782432000000}};
-var fmt$=function(v){return v==null?"—":"$"+v.toFixed(2)};
-var fmtDate=function(ts){
-  var d=new Date(ts),p2=function(n){return n<10?"0"+n:""+n};
-  return d.getUTCFullYear()+"-"+p2(d.getUTCMonth()+1)+"-"+p2(d.getUTCDate());
-};
-(function(){
-  for(var k in SUMMARY){
-    var s=SUMMARY[k],c=s.composite||0;
-    var z=c>=60?"抄底":c>=40?"定投":"观望";
-    var chg=s.prev?((s.price-s.prev)/s.prev*100):0;
-    var chgStr=chg>=0?"+"+chg.toFixed(2)+"%":chg.toFixed(2)+"%";
-    var chgColor=chg>=0?"var(--green)":"var(--red)";
-    document.getElementById("ov-price-"+k).innerHTML=fmt$(s.price)+" <span class='chg' style='color:"+chgColor+"'>"+chgStr+"</span>";
-    document.getElementById("ov-comp-"+k).textContent=c.toFixed(1);
-    document.getElementById("ov-comp-"+k).className=z=="抄底"?"high":z=="定投"?"mid":"low";
-    document.getElementById("badge-"+k).textContent=z;
-    document.getElementById("badge-"+k).className="badge badge-"+z;
-    var mp=[];
-    if(s.rsi!=null)mp.push("RSI "+s.rsi.toFixed(1));
-    if(s.dd!=null)mp.push("回撤 "+(s.dd*100).toFixed(1)+"%");
-    if(s.vol!=null)mp.push("波动 "+(s.vol*100).toFixed(1)+"%");
-    document.getElementById("ov-meta-"+k).textContent=mp.join(" | ");
-    document.getElementById("ov-updated").textContent="数据截至 "+fmtDate(s.date);
+// 自动读取各 ETF 的 JSON 数据来显示最新值
+const ETFS = [
+  { key: 'SPMO', json: 'spy-ahr999/data/spy_daily.json', html: 'spy-ahr999/index.html', stop: 40.4, bottom: 74.5 },
+  { key: 'SOXX', json: 'soxx-ahr999/data/soxx_daily.json', html: 'soxx-ahr999/index.html', stop: 40.4, bottom: 74.5 },
+  { key: 'XMMO', json: 'xmmo-ahr999/data/xmmo_daily.json', html: 'xmmo-ahr999/index.html', stop: 40.4, bottom: 74.5 },
+];
+
+async function loadSummary() {
+  const cards = document.querySelectorAll('.card');
+  for (let i = 0; i < ETFS.length; i++) {
+    try {
+      const resp = await fetch(ETFS[i].json);
+      const data = await resp.json();
+      const bars = data.bars;
+      const last = bars[bars.length - 1];
+      const prev = bars[bars.length - 2];
+      const card = cards[i];
+      
+      const price = last.c;
+      const composite = last.composite || 0;
+      const d = new Date(last.t);
+      const dateStr = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+      
+      // Price change
+      const chg = prev ? ((price - prev.c) / prev.c * 100) : 0;
+      const chgStr = chg >= 0 ? `+${chg.toFixed(2)}%` : `${chg.toFixed(2)}%`;
+      const chgColor = chg >= 0 ? '#4caf50' : '#ef5350';
+      
+      // Composite color
+      let compClass = 'low';
+      let badgeClass = 'badge-watch';
+      let badgeText = '观望';
+      if (composite >= 75 || composite >= ETFS[i].bottom) {
+        compClass = 'high';
+        badgeClass = 'badge-bottom';
+        badgeText = '抄底区域';
+      } else if (composite > ETFS[i].stop) {
+        compClass = 'mid';
+        badgeClass = 'badge-buy';
+        badgeText = '定投区域';
+      }
+      
+      card.querySelector('.price').innerHTML = `$${price.toFixed(2)} <span style="font-size:0.8rem;color:${chgColor}">${chgStr}</span>`;
+      card.querySelector('.composite span').textContent = composite.toFixed(1);
+      card.querySelector('.composite span').className = compClass;
+      card.querySelector('.badge').textContent = badgeText;
+      card.querySelector('.badge').className = 'badge ' + badgeClass;
+      
+      document.getElementById('date').textContent = dateStr;
+    } catch(e) {
+      console.warn('Failed to load', ETFS[i].key, e);
+    }
   }
-})();
+}
+loadSummary();
 </script>
 </body>
 </html>
